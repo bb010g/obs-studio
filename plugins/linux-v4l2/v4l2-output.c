@@ -20,7 +20,7 @@ struct virtualcam_data {
 static const char *virtualcam_name(void *unused)
 {
 	UNUSED_PARAMETER(unused);
-	return "Virtual Camera Output";
+	return obs_module_text("V4L2Output");
 }
 
 static void virtualcam_destroy(void *data)
@@ -170,7 +170,7 @@ static bool try_connect(void *data, const char *device)
 		goto fail_close_device;
 	}
 
-	blog(LOG_INFO, "Virtual camera started");
+	blog(LOG_INFO, "V4L2 virtual camera started");
 	obs_output_begin_data_capture(vcam->output, 0);
 
 	return true;
@@ -228,7 +228,7 @@ static bool virtualcam_start(void *data)
 	free(list);
 
 	if (!success)
-		blog(LOG_WARNING, "Failed to start virtual camera");
+		blog(LOG_WARNING, "Failed to start V4L2 virtual camera");
 
 	return success;
 }
@@ -246,7 +246,7 @@ static void virtualcam_stop(void *data, uint64_t ts)
 	}
 
 	close(vcam->device);
-	blog(LOG_INFO, "Virtual camera stopped");
+	blog(LOG_INFO, "V4L2 virtual camera stopped");
 
 	UNUSED_PARAMETER(ts);
 }
@@ -264,7 +264,7 @@ static void virtual_video(void *param, struct video_data *frame)
 }
 
 struct obs_output_info virtualcam_info = {
-	.id = "virtualcam_output",
+	.id = "virtualcam_v4l2_output",
 	.flags = OBS_OUTPUT_VIDEO | OBS_OUTPUT_VIRTUALCAM,
 	.get_name = virtualcam_name,
 	.create = virtualcam_create,
