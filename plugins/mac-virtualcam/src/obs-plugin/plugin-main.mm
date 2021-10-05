@@ -550,7 +550,7 @@ static void virtualcam_output_raw_video(void *data, struct video_data *frame)
 
 struct obs_output_info virtualcam_output_info = {
     .id = "virtualcam_output",
-    .flags = OBS_OUTPUT_VIDEO,
+    .flags = OBS_OUTPUT_VIDEO | OBS_OUTPUT_VIRTUALCAM,
     .get_name = virtualcam_output_get_name,
     .create = virtualcam_output_create,
     .destroy = virtualcam_output_destroy,
