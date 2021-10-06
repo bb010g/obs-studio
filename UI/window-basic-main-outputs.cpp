@@ -292,9 +292,18 @@ inline BasicOutputHandler::BasicOutputHandler(OBSBasic *main_) : main(main_)
 		auto &vcamCamera1Output = main->vcamConfig.camera1Output;
 		if (!vcamCamera1Output.empty() && obs_get_output_flags(vcamCamera1Output.c_str()) & OBS_OUTPUT_VIRTUALCAM)
 			virtualCam = obs_output_create(vcamCamera1Output.c_str(), "virtualcam_output", nullptr, nullptr);
+		auto &vcamCamera2Output = main->vcamConfig.camera2Output;
+		if (!vcamCamera2Output.empty() && obs_get_output_flags(vcamCamera2Output.c_str()) & OBS_OUTPUT_VIRTUALCAM)
+			(!virtualCam ? virtualCam : virtualCam2) = obs_output_create(vcamCamera2Output.c_str(), "virtualcam_output", nullptr, nullptr);
 
 		if (virtualCam) {
 			signal_handler_t *signal = obs_output_get_signal_handler(virtualCam);
+			startVirtualCam.Connect(signal, "start", OBSStartVirtualCam, this);
+			stopVirtualCam.Connect(signal, "stop", OBSStopVirtualCam, this);
+			deactivateVirtualCam.Connect(signal, "deactivate", OBSDeactivateVirtualCam, this);
+		}
+		if (virtualCam2) {
+			signal_handler_t *signal = obs_output_get_signal_handler(virtualCam2);
 			startVirtualCam.Connect(signal, "start", OBSStartVirtualCam, this);
 			stopVirtualCam.Connect(signal, "stop", OBSStopVirtualCam, this);
 			deactivateVirtualCam.Connect(signal, "deactivate", OBSDeactivateVirtualCam, this);
@@ -334,12 +343,18 @@ bool BasicOutputHandler::StartVirtualCam()
 	audio_t *virtualCamAudio = obs_get_audio();
 
 	obs_output_set_media(virtualCam, virtualCamVideo, virtualCamAudio);
+	if (virtualCam2)
+		obs_output_set_media(virtualCam2, virtualCamVideo, virtualCamAudio);
 	if (!Active())
 		SetupOutputs();
 
 	obs_output_t *failedVirtualCam = nullptr;
 	if (!failedVirtualCam && !obs_output_start(virtualCam))
 		failedVirtualCam = virtualCam;
+	if (!failedVirtualCam && virtualCam2 && !obs_output_start(virtualCam2)) {
+		obs_output_force_stop(virtualCam);
+		failedVirtualCam = virtualCam2;
+	}
 	if (failedVirtualCam) {
 		QString errorReason;
 
@@ -363,6 +378,8 @@ bool BasicOutputHandler::StartVirtualCam()
 void BasicOutputHandler::StopVirtualCam()
 {
 	if (main->vcamEnabled) {
+		if (virtualCam2)
+			obs_output_stop(virtualCam2);
 		if (virtualCam)
 			obs_output_stop(virtualCam);
 	}
@@ -373,6 +390,7 @@ bool BasicOutputHandler::VirtualCamActive() const
 	bool vcamActive = false;
 	if (main->vcamEnabled) {
 		vcamActive ||= virtualCam && obs_output_active(virtualCam);
+		vcamActive ||= virtualCam2 && obs_output_active(virtualCam2);
 	}
 	return vcamActive;
 }

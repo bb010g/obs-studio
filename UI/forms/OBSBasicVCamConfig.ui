@@ -52,6 +52,16 @@
      <item row="2" column="1">
       <widget class="QComboBox" name="camera1Output"/>
      </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="camera2OutputLabel">
+       <property name="text">
+        <string>Basic.VCam.Cameras.Output</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="camera2Output"/>
+     </item>
     </layout>
    </item>
    <item>

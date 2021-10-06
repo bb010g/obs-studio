@@ -860,6 +860,8 @@ void OBSBasic::Save(const char *file)
 		}
 
 		obs_data_set_string(obj, "camera-1-output", vcamConfig.camera1Output.c_str());
+		if (!vcamConfig.camera2Output.empty())
+			obs_data_set_string(obj, "camera-2-output", vcamConfig.camera2Output.c_str());
 
 		obs_data_set_obj(saveData, "virtual-camera", obj);
 	}
@@ -1438,6 +1440,8 @@ retryScene:
 
 		obs_data_set_default_string(obj, "camera-1-output", "");
 		vcamConfig.camera1Output = obs_data_get_string(obj, "camera-1-output");
+		obs_data_set_default_string(obj, "camera-2-output", "");
+		vcamConfig.camera2Output = obs_data_get_string(obj, "camera-2-output");
 	}
 
 	if (obs_data_has_user_value(data, "resolution")) {
@@ -2129,7 +2133,8 @@ void OBSBasic::OBSInit()
 	cef_js_avail = cef && obs_browser_qcef_version() >= 3;
 #endif
 
-	vcamEnabled = VIRTUAL_CAM_ID && (obs_get_output_flags(VIRTUAL_CAM_ID) & OBS_OUTPUT_VIDEO & OBS_OUTPUT_VIRTUALCAM) != 0;
+	vcamEnabled = (VIRTUAL_CAM_ID && (obs_get_output_flags(VIRTUAL_CAM_ID) & OBS_OUTPUT_VIDEO & OBS_OUTPUT_VIRTUALCAM) != 0) ||
+		(VIRTUAL_CAM_2_ID && (obs_get_output_flags(VIRTUAL_CAM_ID_2) & OBS_OUTPUT_VIDEO & OBS_OUTPUT_VIRTUALCAM) != 0);
 	if (vcamEnabled) {
 		emit VirtualCamEnabled();
 	}

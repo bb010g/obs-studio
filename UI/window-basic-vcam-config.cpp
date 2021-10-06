@@ -31,14 +31,25 @@ OBSBasicVCamConfig::OBSBasicVCamConfig(const VCamConfig &_config, bool _vcamActi
 		ui->camera1Output->addItem(QT_UTF8(obs_output_get_display_name(VIRTUAL_CAM_ID)), VIRTUAL_CAM_ID);
 		ui->camera2Output->addItem(QT_UTF8(obs_output_get_display_name(VIRTUAL_CAM_ID)), VIRTUAL_CAM_ID);
 	}
+	if (VIRTUAL_CAM_2_ID) {
+		ui->camera1Output->addItem(QT_UTF8(obs_output_get_display_name(VIRTUAL_CAM_2_ID)), VIRTUAL_CAM_2_ID);
+		ui->camera2Output->addItem(QT_UTF8(obs_output_get_display_name(VIRTUAL_CAM_2_ID)), VIRTUAL_CAM_2_ID);
+	}
+	ui->camera2Output->addItem(QTStr("Basic.VCam.Cameras.Output.Disabled"), "");
 	auto camera1OutputIndex = ui->camera1Output->findData(config.camera1Output);
 	if (camera1OutputIndex < 0)
 		camera1OutputIndex = 0;
 	ui->camera1Output->setCurrentIndex(camera1OutputIndex);
-	ui->camera1Output->setVisible(ui->camera1Output->count > 1);
+	auto camera2OutputIndex = ui->camera2Output->findData(config.camera2Output);
+	if (camera2OutputIndex < 0)
+		camera2OutputIndex = ui->camera2Output->count - 1;
+	ui->camera2Output->setCurrentIndex(camera2OutputIndex);
+	ui->camera2Output->setVisible(ui->camera2Output->count > 1);
+	ui->camera1Output->setVisible(!ui->camera2Output->visible && ui->camera1Output->count > 1);
 
 	CamerasOutputsChanged();
 	connect(ui->camera1Output, &QComboBox::currentIndexChanged, this, &OBSBasicVCamConfig::CamerasOutputsChanged);
+	connect(ui->camera2Output, &QComboBox::currentIndexChanged, this, &OBSBasicVCamConfig::CamerasOutputsChanged);
 
 	connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &OBSBasicVCamConfig::UpdateConfig);
 }
@@ -116,12 +127,19 @@ void OBSBasicVCamConfig::CamerasOutputsChanged()
 {
 	auto *cameraChangedOutputList = qobject_cast<QComboBox *>(sender());
 	auto *camera1OutputList = ui->camera1Output;
+	auto *camera2OutputList = ui->camera2Output;
 
 	auto camera1OutputIndex = camera1OutputList->currentIndex();
+	auto camera2OutputIndex = camera2OutputList->currentIndex();
 
-	if (cameraChangedOutputList->currentIndex() == -1) {
+	if (camera1OutputIndex == camera2OutputIndex) {
+		camera2OutputList->setCurrentIndex(camera2OutputList->count - 1);
+		return;
+	} else if (cameraChangedOutputList->currentIndex() == -1) {
 		if (cameraChangedOutputList == camera1OutputList)
 			cameraChangedOutputList->setCurrentIndex(1);
+		else
+			cameraChangedOutputList->setCurrentIndex(cameraChangedOutputList->count - 1);
 		return;
 	}
 }
@@ -147,6 +165,7 @@ void OBSBasicVCamConfig::UpdateConfig()
 	config.type = type;
 
 	config.camera1Output = camera1OutputList->currentData().toStdString();
+	config.camera2Output = camera2OutputList->currentData().toStdString();
 
 	if (requireRestart) {
 		emit AcceptedAndRestart(config);

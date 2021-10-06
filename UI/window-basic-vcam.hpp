@@ -3,6 +3,7 @@
 #include <string>
 
 constexpr const char *VIRTUAL_CAM_ID = "virtualcam_output";
+constexpr const char *VIRTUAL_CAM_2_ID = nullptr;
 
 enum VCamOutputType {
 	Invalid,
@@ -23,4 +24,5 @@ struct VCamConfig {
 	std::string scene;
 	std::string source;
 	std::string camera1Output;
+	std::string camera2Output;
 };

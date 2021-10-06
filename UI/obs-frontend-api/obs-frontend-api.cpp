@@ -514,6 +514,11 @@ obs_output_t *obs_frontend_get_virtualcam_output(void)
 	return !!callbacks_valid() ? c->obs_frontend_get_virtualcam_output() : nullptr;
 }
 
+obs_output_t *obs_frontend_get_virtualcam_output_2(void)
+{
+	return !!callbacks_valid() ? c->obs_frontend_get_virtualcam_output_2() : nullptr;
+}
+
 void obs_frontend_start_virtualcam(void)
 {
 	if (callbacks_valid())
