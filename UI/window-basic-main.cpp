@@ -2124,7 +2124,7 @@ void OBSBasic::OBSInit()
 	cef_js_avail = cef && obs_browser_qcef_version() >= 3;
 #endif
 
-	vcamEnabled = (obs_get_output_flags(VIRTUAL_CAM_ID) & OBS_OUTPUT_VIDEO & OBS_OUTPUT_VIRTUALCAM) != 0;
+	vcamEnabled = VIRTUAL_CAM_ID && (obs_get_output_flags(VIRTUAL_CAM_ID) & OBS_OUTPUT_VIDEO & OBS_OUTPUT_VIRTUALCAM) != 0;
 	if (vcamEnabled) {
 		emit VirtualCamEnabled();
 	}
