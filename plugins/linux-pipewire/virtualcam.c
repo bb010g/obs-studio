@@ -109,7 +109,7 @@ static void virtual_video(void *data, struct video_data *frame)
 void virtual_camera_load(void)
 {
 	struct obs_output_info pipewire_virtualcam_info = {
-		.id = "virtualcam_output",
+		.id = "virtualcam_pw_output",
 		.flags = OBS_OUTPUT_VIDEO | OBS_OUTPUT_VIRTUALCAM,
 		.get_name = virtualcam_name,
 		.create = virtualcam_create,
