@@ -15,24 +15,44 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="outputTypeLabel">
-     <property name="text">
-      <string>Basic.VCam.OutputType</string>
+    <layout class="QFormLayout" name="outputLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="outputType"/>
-   </item>
-   <item>
-    <widget class="QLabel" name="outputSelectionLabel">
-     <property name="text">
-      <string>Basic.VCam.OutputSelection</string>
+     <property name="labelAlignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="outputSelection"/>
+     <item row="0" column="0">
+      <widget class="QLabel" name="outputTypeLabel">
+       <property name="text">
+        <string>Basic.VCam.OutputType</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="outputType"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="outputSelectionLabel">
+       <property name="text">
+        <string>Basic.VCam.OutputSelection</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="outputSelection"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="camera1OutputLabel">
+       <property name="text">
+        <string>Basic.VCam.Cameras.Output</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="camera1Output"/>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="warningLabel">

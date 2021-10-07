@@ -24,6 +24,7 @@ public:
 
 private slots:
 	void OutputTypeChanged();
+	void CamerasOutputsChanged();
 	void UpdateConfig();
 
 private:

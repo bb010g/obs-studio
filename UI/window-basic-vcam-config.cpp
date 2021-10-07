@@ -27,6 +27,19 @@ OBSBasicVCamConfig::OBSBasicVCamConfig(const VCamConfig &_config, bool _vcamActi
 	OutputTypeChanged();
 	connect(ui->outputType, &QComboBox::currentIndexChanged, this, &OBSBasicVCamConfig::OutputTypeChanged);
 
+	if (VIRTUAL_CAM_ID) {
+		ui->camera1Output->addItem(QT_UTF8(obs_output_get_display_name(VIRTUAL_CAM_ID)), VIRTUAL_CAM_ID);
+		ui->camera2Output->addItem(QT_UTF8(obs_output_get_display_name(VIRTUAL_CAM_ID)), VIRTUAL_CAM_ID);
+	}
+	auto camera1OutputIndex = ui->camera1Output->findData(config.camera1Output);
+	if (camera1OutputIndex < 0)
+		camera1OutputIndex = 0;
+	ui->camera1Output->setCurrentIndex(camera1OutputIndex);
+	ui->camera1Output->setVisible(ui->camera1Output->count > 1);
+
+	CamerasOutputsChanged();
+	connect(ui->camera1Output, &QComboBox::currentIndexChanged, this, &OBSBasicVCamConfig::CamerasOutputsChanged);
+
 	connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &OBSBasicVCamConfig::UpdateConfig);
 }
 
@@ -99,6 +112,20 @@ void OBSBasicVCamConfig::OutputTypeChanged()
 	ui->warningLabel->setVisible(requireRestart);
 }
 
+void OBSBasicVCamConfig::CamerasOutputsChanged()
+{
+	auto *cameraChangedOutputList = qobject_cast<QComboBox *>(sender());
+	auto *camera1OutputList = ui->camera1Output;
+
+	auto camera1OutputIndex = camera1OutputList->currentIndex();
+
+	if (cameraChangedOutputList->currentIndex() == -1) {
+		if (cameraChangedOutputList == camera1OutputList)
+			cameraChangedOutputList->setCurrentIndex(1);
+		return;
+	}
+}
+
 void OBSBasicVCamConfig::UpdateConfig()
 {
 	VCamOutputType type = (VCamOutputType)ui->outputType->currentData().toInt();
@@ -118,6 +145,8 @@ void OBSBasicVCamConfig::UpdateConfig()
 	}
 
 	config.type = type;
+
+	config.camera1Output = camera1OutputList->currentData().toStdString();
 
 	if (requireRestart) {
 		emit AcceptedAndRestart(config);

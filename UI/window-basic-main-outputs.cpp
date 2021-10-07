@@ -289,8 +289,9 @@ static const char *GetStreamOutputType(const obs_service_t *service)
 inline BasicOutputHandler::BasicOutputHandler(OBSBasic *main_) : main(main_)
 {
 	if (main->vcamEnabled) {
-		if (VIRTUAL_CAM_ID && obs_get_output_flags(VIRTUAL_CAM_ID) & OBS_OUTPUT_VIRTUALCAM)
-			virtualCam = obs_output_create(VIRTUAL_CAM_ID, "virtualcam_output", nullptr, nullptr);
+		auto &vcamCamera1Output = main->vcamConfig.camera1Output;
+		if (!vcamCamera1Output.empty() && obs_get_output_flags(vcamCamera1Output.c_str()) & OBS_OUTPUT_VIRTUALCAM)
+			virtualCam = obs_output_create(vcamCamera1Output.c_str(), "virtualcam_output", nullptr, nullptr);
 
 		if (virtualCam) {
 			signal_handler_t *signal = obs_output_get_signal_handler(virtualCam);

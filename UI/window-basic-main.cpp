@@ -859,6 +859,8 @@ void OBSBasic::Save(const char *file)
 			break;
 		}
 
+		obs_data_set_string(obj, "camera-1-output", vcamConfig.camera1Output.c_str());
+
 		obs_data_set_obj(saveData, "virtual-camera", obj);
 	}
 
@@ -1433,6 +1435,9 @@ retryScene:
 		}
 		vcamConfig.scene = obs_data_get_string(obj, "scene");
 		vcamConfig.source = obs_data_get_string(obj, "source");
+
+		obs_data_set_default_string(obj, "camera-1-output", "");
+		vcamConfig.camera1Output = obs_data_get_string(obj, "camera-1-output");
 	}
 
 	if (obs_data_has_user_value(data, "resolution")) {

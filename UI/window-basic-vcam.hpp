@@ -22,4 +22,5 @@ struct VCamConfig {
 	VCamOutputType type = VCamOutputType::ProgramView;
 	std::string scene;
 	std::string source;
+	std::string camera1Output;
 };
