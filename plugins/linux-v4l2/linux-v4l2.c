@@ -32,11 +32,11 @@ bool obs_module_load(void)
 {
 	obs_register_source(&v4l2_input);
 
-	if (loopback_module_available()) {
-		obs_register_output(&virtualcam_info);
-	} else {
-		blog(LOG_WARNING, "v4l2loopback not installed, virtual camera not registered");
-	}
+	//if (loopback_module_available()) {
+	//	obs_register_output(&virtualcam_info);
+	//} else {
+	//	blog(LOG_WARNING, "v4l2loopback not installed, virtual camera not registered");
+	//}
 
 	return true;
 }

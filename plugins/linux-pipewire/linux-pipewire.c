@@ -25,6 +25,7 @@
 
 #include <pipewire/pipewire.h>
 #include "screencast-portal.h"
+#include "virtualcam.h"
 
 #if PW_CHECK_VERSION(0, 3, 60)
 #include "camera-portal.h"
@@ -50,6 +51,8 @@ bool obs_module_load(void)
 #endif
 
 	screencast_portal_load();
+
+	virtual_camera_load();
 
 	return true;
 }
